@@ -1,46 +1,13 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import {
-  exportToCanvas,
-  exportToSvg,
-  exportToBlob,
-  exportToClipboard,
   Excalidraw,
   useHandleLibrary,
-  MIME_TYPES,
-  sceneCoordsToViewportCoords,
-  viewportCoordsToSceneCoords,
-  restoreElements,
-  LiveCollaborationTrigger,
   MainMenu,
-  Footer,
-  Sidebar
 } from "@excalidraw/excalidraw";
 import {
-  AppState,
-  BinaryFileData,
   ExcalidrawImperativeAPI,
-  ExcalidrawInitialDataState,
-  Gesture,
-  LibraryItems,
-  PointerDownState as ExcalidrawPointerDownState
 } from "@excalidraw/excalidraw/types/types";
 import "./App.scss";
-
-import { NonDeletedExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
-import { nanoid } from "nanoid";
-import MobileFooter from "./MobileFooter";
-import {
-  resolvablePromise,
-  withBatchedUpdates,
-  withBatchedUpdatesThrottled,
-  distance2d
-} from "./utils";
-import { ResolvablePromise } from "@excalidraw/excalidraw/types/utils";
-
-
-
-// This is so that we use the bundled excalidraw.development.js file instead
-// of the actual source code
 
 export default function App() {
   const [
@@ -48,47 +15,50 @@ export default function App() {
     setExcalidrawAPI
   ] = useState<ExcalidrawImperativeAPI | null>(null);
 
+  // Using the hook to load the library only after the API is initialized
   useHandleLibrary({ excalidrawAPI });
 
   useEffect(() => {
     if (!excalidrawAPI) {
+      console.error("Excalidraw API not initialized.");
       return;
     }
+    // You can use the excalidrawAPI here for imperative calls
   }, [excalidrawAPI]);
 
+  // Function to render the custom menu
   const renderMenu = () => {
     return (
       <MainMenu>
-        <MainMenu.DefaultItems.SaveAsImage />
-        <MainMenu.DefaultItems.Export />
-        <MainMenu.DefaultItems.Help />
+        <MainMenu.DefaultItems.SaveAsImage aria-label="Save as Image" />
+        <MainMenu.DefaultItems.Export aria-label="Export Drawing" />
+        <MainMenu.DefaultItems.Help aria-label="Help and Documentation" />
       </MainMenu>
     );
   };
+
   return (
     <div className="App">
-      <h1> Excalidraw Example</h1>
+      <h1>Excalidraw Example</h1>
 
-        <div className="excalidraw-wrapper">
-          <Excalidraw
-            excalidrawAPI={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
-            onChange={(elements, state) => {
-              console.info("Elements :", elements, "State : ", state);
-            }}
-            viewModeEnabled={false}
-            zenModeEnabled={false}
-            gridModeEnabled={false}
-            theme={"light"}
-            name="Custom name of drawing"
-            UIOptions={{
-              canvasActions: { loadScene: false }
-            }}
-          >
-        
-            {renderMenu()}
-          </Excalidraw>
-        
-        </div>
+      <div className="excalidraw-wrapper">
+        <Excalidraw
+          excalidrawAPI={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
+          onChange={(elements, state) => {
+            console.info("Elements:", elements, "State:", state);
+          }}
+          viewModeEnabled={false}
+          zenModeEnabled={false}
+          gridModeEnabled={false}
+          theme={"light"}
+          name="Custom Drawing Name"
+          UIOptions={{
+            canvasActions: { loadScene: false }
+          }}
+        >
+          {renderMenu()}
+        </Excalidraw>
+      </div>
     </div>
   );
 }
