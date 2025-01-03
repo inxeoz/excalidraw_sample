@@ -132,27 +132,6 @@ export default function App() {
     fetchData();
   }, [excalidrawAPI]);
 
-  const renderTopRightUI = (isMobile: boolean) => {
-    return (
-      <>
-        {!isMobile && (
-          <LiveCollaborationTrigger
-            isCollaborating={isCollaborating}
-            onSelect={() => {
-              window.alert("Collab dialog clicked");
-            }}
-          />
-        )}
-        <button
-          onClick={() => alert("This is dummy top right UI")}
-          style={{ height: "2.5rem" }}
-        >
-          {" "}
-          Click me{" "}
-        </button>
-      </>
-    );
-  };
 
 
   const onLinkOpen = useCallback(
@@ -428,23 +407,6 @@ export default function App() {
       <MainMenu>
         <MainMenu.DefaultItems.SaveAsImage />
         <MainMenu.DefaultItems.Export />
-        <MainMenu.Separator />
-        <MainMenu.DefaultItems.LiveCollaborationTrigger
-          isCollaborating={isCollaborating}
-          onSelect={() => window.alert("You clicked on collab button")}
-        />
-        <MainMenu.Group title="Excalidraw links">
-          <MainMenu.DefaultItems.Socials />
-        </MainMenu.Group>
-        <MainMenu.Separator />
-        <MainMenu.ItemCustom>
-          <button
-            style={{ height: "2rem" }}
-            onClick={() => window.alert("custom menu item")}
-          >
-            custom item
-          </button>
-        </MainMenu.ItemCustom>
         <MainMenu.DefaultItems.Help />
 
         {excalidrawAPI && <MobileFooter excalidrawAPI={excalidrawAPI} />}
@@ -475,17 +437,12 @@ export default function App() {
             UIOptions={{
               canvasActions: { loadScene: false }
             }}
-            renderTopRightUI={renderTopRightUI}
             onLinkOpen={onLinkOpen}
             onPointerDown={onPointerDown}
             onScrollChange={rerenderCommentIcons}
-            renderSidebar={renderSidebar}
+    
           >
-            {excalidrawAPI && (
-              <Footer>
-                <CustomFooter excalidrawAPI={excalidrawAPI} />
-              </Footer>
-            )}
+        
             {renderMenu()}
           </Excalidraw>
           {Object.keys(commentIcons || []).length > 0 && renderCommentIcons()}
